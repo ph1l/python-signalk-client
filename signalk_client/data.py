@@ -25,7 +25,7 @@ import pkg_resources
 from signalk_client.datum import Datum
 
 class Data(object):
-    """signak data object
+    """signalk data object
     """
 
     def __init__(self, seed=None):
@@ -147,7 +147,7 @@ class Data(object):
         return self.data['vessels'].keys()
 
     def get_targets(self, vessel):
-        """returna a list of available properties for vessel
+        """returns a list of available properties for vessel
         """
         out_targets = []
         for path in self.meta.keys():

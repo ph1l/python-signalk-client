@@ -66,7 +66,7 @@ class Client(object):
         from signalk_client.zeroconf import ServiceBrowser, Zeroconf
 
         class MyListener(object):
-            """zerocong listener object"""
+            """zeroconf listener object"""
             def __init__(self):
                 self.services = {}
 
@@ -132,7 +132,7 @@ class Client(object):
             ))
 
     def __ws_on_message(self, w_sock, message):
-        """wesocket message handler"""
+        """websocket message handler"""
         self.data.process_delta(json.loads(message))
 
     def __ws_on_error(self, w_sock, error):
@@ -141,7 +141,7 @@ class Client(object):
 
     def __ws_on_close(self, w_sock):
         """websocket connection close handler"""
-        # TODO: handle conection close by reconnecting?
+        # TODO: handle connection close by reconnecting?
         logging.warning("websocket closed")
 
     def __ws_on_open(self, w_sock):
