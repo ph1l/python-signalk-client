@@ -24,6 +24,7 @@ import re
 FEET_PER_METER = 3.28084
 METERS_PER_NAUTICAL_MILE = 1852
 SECONDS_PER_HOUR = 60*60
+KELVIN_CELSIUS_OFFSET = 273.15
 
 DISPLAY_PATH_CONVERSIONS = [
     (re.compile(r"^environment\."), "env."),
@@ -40,6 +41,10 @@ def convert(value, from_unit, to_unit):
         return value*SECONDS_PER_HOUR/METERS_PER_NAUTICAL_MILE
     elif from_unit == 'rad' and to_unit == 'deg':
         return 180 * value / math.pi
+    elif from_unit == 'K' and to_unit == 'C':
+        return value-KELVIN_CELSIUS_OFFSET
+    elif from_unit == 'K' and to_unit == 'F':
+        return ((value-KELVIN_CELSIUS_OFFSET)*(9.0/5.0))+32.0
     else:
         raise NotImplementedError(
             "Conversion from {} to {} is not supported".format(
