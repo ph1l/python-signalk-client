@@ -22,7 +22,7 @@ import copy
 import json
 import logging
 import pkg_resources
-from signalk_client.datum import Datum
+from signalk_client.vessel import Vessel
 
 class Data(object):
     """signalk data object
@@ -87,7 +87,7 @@ class Data(object):
             logging.debug("updated context: {}\n{}".format(
                 ".".join(context_list),
                 json.dumps(
-                    self.__get_by_map_list(context_list),
+                    self.get_by_map_list(context_list),
                     indent=4, sort_keys=True
                     )
                 ))
@@ -96,21 +96,14 @@ class Data(object):
                 "ignoring unrecognized delta message: {!r}".format(data)
                 )
 
-    def __get_by_map_list(self, map_list):
+    def get_by_map_list(self, map_list):
         """return a data object from a hierarchical list of keys"""
         value = reduce(lambda d, k: d[k], map_list, self.data)
         return value
 
     def __set_by_map_list(self, map_list, value):
         """set a data object at location based on a hierarchical list of keys"""
-        self.__get_by_map_list(map_list[:-1])[map_list[-1]] = value
-
-    def get_vessel_prop(self, path, vessel=None):
-        """get data object from property path for vessel
-        """
-        return self.__get_by_map_list(
-            ['vessels', vessel] + path.split('.')
-            )
+        self.get_by_map_list(map_list[:-1])[map_list[-1]] = value
 
     def get_prop_meta(self, path):
         """get meta-data object from a property path
@@ -120,57 +113,10 @@ class Data(object):
         else:
             return {}
 
-    def get_vessel_prop_datum(self, path, vessel=None):
-        """returns a Datum object for the specified vessel's property path
-        """
-        value = None
-        units = None
-        desc = None
-
-        got = self.get_vessel_prop(path, vessel)
-
-        if isinstance(got, dict):
-            value = got['value']
-        else:
-            value = got
-
-        if self.meta.has_key(path):
-            if self.meta[path].has_key('units'):
-                units = self.meta[path]['units']
-            if self.meta[path].has_key('description'):
-                desc = self.meta[path]['description']
-        return Datum(path, value, units, desc)
-
     def get_vessels(self):
-        """returns a list of vessels signalk knows of
+        """returns a list of vessels (as Vessel objects) signalk knows of
         """
-        return self.data['vessels'].keys()
-
-    def get_targets(self, vessel):
-        """returns a list of available properties for vessel
-        """
-        out_targets = []
-        for path in self.meta.keys():
-
-            if path.find("*") > -1:
-
-                logging.warning(
-                    "Unhandled wildcard in target search for: {}".format(path)
-                    )
-
-            elif path.find("$") > -1:
-
-                logging.warning(
-                    "Unhandled reference in target search for: {}".format(path)
-                    )
-
-            else:
-
-                try:
-                    self.get_vessel_prop(path, vessel)
-                except KeyError:
-                    continue
-
-                out_targets.append(path)
-
-        return out_targets
+        vessels = []
+        for vessel_key in self.data['vessels'].keys():
+            vessels.append(Vessel(self, vessel_key))
+        return vessels
