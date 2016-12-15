@@ -54,12 +54,14 @@ class Data(object):
 
         if 'self' in data and 'version' in data and 'timestamp' in data:
             # hello message
-            #
-            # TODO: this message should probably be handled somehow
-            logging.warning(
-                "unhandled hello message in delta stream: {!r}".format(data)
+            logging.debug(
+                "hello message in delta stream: {!r}".format(data)
                 )
-
+            context_list = []
+            update_properties = {}
+            if 'self' in data:
+                logging.info("setting self = {!r}".format(data['self']))
+                self.__set_by_map_list(['self'], data['self'])
         elif 'updates' in data:
             # delta message
             if 'context' in data:
