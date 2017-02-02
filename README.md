@@ -3,7 +3,7 @@
 This is a python client library for the [Signal-K](http://signalk.org/)
 Protocol.
 
-a curses terminal client can be found at https://github.com/ph1l/pysk
+a client application can be found at https://github.com/ph1l/pysk
 
 ## Requirements
 
