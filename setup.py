@@ -17,8 +17,8 @@ setup(
     package_data={'signalk_client': ['include/*']},
     author = "Philip J Freeman",
     author_email = "elektron@halo.nu",
-    description = "",
+    description = "python client library for the SignalK protocol",
     license = "GPL3",
-    keywords = "",
+    keywords = "signalk",
     url = "https://github.com/ph1l/python-signalk-client",
 )
