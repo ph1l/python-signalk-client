@@ -18,6 +18,7 @@
 
 """dealing with individual data"""
 
+import logging
 import math
 import re
 
@@ -88,8 +89,11 @@ class Datum(object):
         if convert_units != None:
             for from_unit, to_unit in convert_units:
                 if units == from_unit:
-                    value = convert(value, from_unit, to_unit)
-                    units = to_unit
+                    try:
+                        value = convert(value, from_unit, to_unit)
+                        units = to_unit
+                    except TypeError:
+                        logging.warn("Conversion ({} to {}) for {} ({}) failed".format(from_unit, to_unit, self.path, self.value))
         out_string = ""
         if value == None:
             out_string += "--"
