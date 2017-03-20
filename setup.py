@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 setup(
     name = "signalk_client",
-    version = "0.2.1",
+    version = "0.2.2",
     test_suite="tests",
     packages = find_packages(),
     install_requires = [
