@@ -30,6 +30,7 @@ class Data(object):
 
     def __init__(self, seed=None):
 
+        self.initialized = False
         self.meta = json.load(pkg_resources.resource_stream(
             'signalk_client', 'include/meta.json'
             ))
@@ -62,6 +63,7 @@ class Data(object):
             if 'self' in data:
                 logging.info("setting self = {!r}".format(data['self']))
                 self.__set_by_map_list(['self'], data['self'])
+            self.initialized = True
         elif 'updates' in data:
             # delta message
             if 'context' in data:
