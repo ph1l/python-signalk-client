@@ -119,7 +119,7 @@ class Vessel(object):
         signalk property path.
         """
         return self.data.get_by_map_list(
-            ['vessels', self.key] + path.split('.')
+            self.key.split('.') + path.split('.')
             )
 
     def get_datum(self, path):
