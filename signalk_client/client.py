@@ -22,6 +22,7 @@ import json
 import logging
 import requests
 import threading
+import time
 import websocket
 from signalk_client.data import Data
 
@@ -57,6 +58,10 @@ class Client(object):
         self.websocket_t = threading.Thread(target=self.w_sock.run_forever)
         self.websocket_t.daemon = True
         self.websocket_t.start()
+
+        # wait for hello message over websocket
+        while self.data.initialized == False:
+            time.sleep(0.2)
 
     def __zeroconf_server(self):
         """discover local signalk server
