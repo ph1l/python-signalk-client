@@ -1,7 +1,7 @@
 """a python client library for SignalK
 
 python-signalk-client is a python client library for SignalK
-Copyright (C) 2016  Philip J Freeman <elektron@halo.nu>
+Copyright (C) 2016-2018  Philip J Freeman <elektron@halo.nu>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
