@@ -128,8 +128,4 @@ class Data(object):
     def get_self(self):
         """returns "self" vessel (as Vessel object)
         """
-        vessels = []
-        for vessel_key in self.data['vessels'].keys():
-            vessels.append(Vessel(self, vessel_key))
-
         return Vessel(self, self.data['self'])
