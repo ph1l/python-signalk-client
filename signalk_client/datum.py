@@ -33,6 +33,19 @@ DISPLAY_PATH_CONVERSIONS = [
     (re.compile(r"\.position\."), ".pos."),
     ]
 
+FULL_UNITS = {
+    'm': 'meters',
+    'ft': 'feet',
+    'f': 'fathoms',
+    'm/s': 'meters per second',
+    'kn': 'knots',
+    'rad': 'radians',
+    'deg': 'degrees',
+    'K': 'kelvin',
+    'C': 'celsius',
+    'F': 'farenheight',
+    }
+
 def convert(value, from_unit, to_unit):
     """helper function to handle unit conversion"""
 
@@ -76,7 +89,7 @@ class Datum(object):
             out_string = re.sub(pattern, replacement, out_string)
         return out_string
 
-    def display_value(self, convert_units=None):
+    def display_value(self, convert_units=None, abbreviate_units=True):
         """return the property value for display
 
         convert_units is a list of conversions to make
@@ -86,25 +99,44 @@ class Datum(object):
         out_string = ""
         if self.path.endswith('navigation.position'): #snowflake
             if self.value['latitude'] > 0:
-                lat_hemi = 'N'
+                if abbreviate_units:
+                    lat_hemi = 'N'
+                else:
+                    lat_hemi = 'North'
             elif self.value['latitude'] < 0:
-                lat_hemi = 'S'
+                if abbreviate_units:
+                    lat_hemi = 'S'
+                else:
+                    lat_hemi = 'South'
             else:
                 lat_hemi = ' '
             latitude = abs(self.value['latitude'])
 
             if self.value['longitude'] > 0:
-                lon_hemi = 'E'
+                if abbreviate_units:
+                    lon_hemi = 'E'
+                else:
+                    lon_hemi = 'East'
             elif self.value['longitude'] < 0:
-                lon_hemi = 'W'
+                if abbreviate_units:
+                    lon_hemi = 'W'
+                else:
+                    lon_hemi = 'West'
             else:
                 lon_hemi = ' '
             longitude = abs(self.value['longitude'])
 
-            out_string = "{} {} {} {} {} {}".format(
-                    lat_hemi, int(math.floor(latitude)), ((latitude%1)*60),
-                    lon_hemi, int(math.floor(longitude)), ((longitude%1)*60),
-                )
+            if abbreviate_units:
+                out_string = "{} {} {}, {} {} {}".format(
+                        lat_hemi, int(math.floor(latitude)), ((latitude%1)*60),
+                        lon_hemi, int(math.floor(longitude)), ((longitude%1)*60),
+                    )
+            else:
+                out_string = "{} {} degrees {} minutes, {} {} degrees {} minutes".format(
+                        lat_hemi, int(math.floor(latitude)), ((latitude%1)*60),
+                        lon_hemi, int(math.floor(longitude)), ((longitude%1)*60),
+                    )
+
             return out_string
 
         value = self.value
@@ -119,12 +151,18 @@ class Datum(object):
                     except TypeError:
                         logging.warn("Conversion ({} to {}) for {} ({}) failed".format(from_unit, to_unit, self.path, self.value))
         if value == None:
-            out_string += "--"
+            if abbreviate_units:
+                out_string += "--"
+            else:
+                out_string += "None"
         else:
             if isinstance(value, float):
                 out_string += "{:.2f}".format(value)
             else:
                 out_string += "{}".format(value)
             if units != None:
-                out_string += " {}".format(units)
+                if not abbreviate_units and FULL_UNITS.has_key(units):
+                    out_string += " {}".format(FULL_UNITS[units])
+                else:
+                    out_string += " {}".format(units)
         return out_string
