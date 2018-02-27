@@ -154,7 +154,6 @@ class Vessel(object):
 
         meta_path = '/vessels/*/'+path.replace('.','/')
         if self.data.meta.has_key(meta_path):
-            logging.info("meta: "+repr(self.data.meta[meta_path]))
             if self.data.meta[meta_path].has_key('units'):
                 units = self.data.meta[meta_path]['units']
             if self.data.meta[meta_path].has_key('description'):
