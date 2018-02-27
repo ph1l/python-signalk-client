@@ -152,9 +152,11 @@ class Vessel(object):
         else:
             value = got
 
-        if self.data.meta.has_key(path):
-            if self.data.meta[path].has_key('units'):
-                units = self.data.meta[path]['units']
-            if self.data.meta[path].has_key('description'):
-                desc = self.data.meta[path]['description']
+        meta_path = '/vessels/*/'+path.replace('.','/')
+        if self.data.meta.has_key(meta_path):
+            logging.info("meta: "+repr(self.data.meta[meta_path]))
+            if self.data.meta[meta_path].has_key('units'):
+                units = self.data.meta[meta_path]['units']
+            if self.data.meta[meta_path].has_key('description'):
+                desc = self.data.meta[meta_path]['description']
         return Datum(path, value, units, desc)
