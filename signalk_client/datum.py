@@ -83,6 +83,30 @@ class Datum(object):
 
             convert_units = [('m', 'ft'), ('m/s', 'kn')]
         """
+        out_string = ""
+        if self.path.endswith('navigation.position'): #snowflake
+            if self.value['latitude'] > 0:
+                lat_hemi = 'N'
+            elif self.value['latitude'] < 0:
+                lat_hemi = 'S'
+            else:
+                lat_hemi = ' '
+            latitude = abs(self.value['latitude'])
+
+            if self.value['longitude'] > 0:
+                lon_hemi = 'E'
+            elif self.value['longitude'] < 0:
+                lon_hemi = 'W'
+            else:
+                lon_hemi = ' '
+            longitude = abs(self.value['longitude'])
+
+            out_string = "{} {} {} {} {} {}".format(
+                    lat_hemi, int(math.floor(latitude)), ((latitude%1)*60),
+                    lon_hemi, int(math.floor(longitude)), ((longitude%1)*60),
+                )
+            return out_string
+
         value = self.value
         units = self.units
 
@@ -94,17 +118,10 @@ class Datum(object):
                         units = to_unit
                     except TypeError:
                         logging.warn("Conversion ({} to {}) for {} ({}) failed".format(from_unit, to_unit, self.path, self.value))
-        out_string = ""
         if value == None:
             out_string += "--"
         else:
-            if self.path.endswith('.latitude'):
-                direction = 'N' if value >= 0 else 'S'
-                out_string += "{:.5f} {}".format(abs(value), direction)
-            elif self.path.endswith('.longitude'):
-                direction = 'E' if value >= 0 else 'W'
-                out_string += "{:.5f} {}".format(abs(value), direction)
-            elif isinstance(value, float):
+            if isinstance(value, float):
                 out_string += "{:.2f}".format(value)
             else:
                 out_string += "{}".format(value)

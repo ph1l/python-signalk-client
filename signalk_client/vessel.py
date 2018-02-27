@@ -84,6 +84,13 @@ class Vessel(object):
         out_targets = []
         for path in self.data.meta.keys():
 
+            if len(path) <= 10:
+                continue
+            if path[0:10] != "/vessels/*":
+                continue
+
+            path = path[11:].replace('/','.')
+
             if path.find("*") > -1:
 
                 # TODO: Support wildcard paths in target scan
@@ -99,6 +106,8 @@ class Vessel(object):
                     )
 
             else:
+
+                logging.debug("Trying target: {}".format(path))
 
                 try:
                     self.get_datum(path)
@@ -132,7 +141,14 @@ class Vessel(object):
         got = self.get_prop(path)
 
         if isinstance(got, dict):
-            value = got['value']
+            if got.has_key('value'):
+                value = got['value']
+            else:
+                if path == "navigation.position":
+                    value = got
+                else:
+                    logging.warning("called get_datum for unhandled path ({}) with 'dict' and no 'value': {}".format(path, repr(got)))
+                    value = 'unknown'
         else:
             value = got
 
