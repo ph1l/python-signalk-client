@@ -110,8 +110,13 @@ class Vessel(object):
                 logging.debug("Trying target: {}".format(path))
 
                 try:
-                    self.get_datum(path)
+                    d = self.get_datum(path)
                 except KeyError:
+                    logging.debug("skipping path \"{}\", KeyError in get_datum".format(path))
+                    continue
+
+                if d.value == "unknown":
+                    logging.warn("skipping path \"{}\", value is \"unknown\"".format(path))
                     continue
 
                 out_targets.append(path)
