@@ -144,7 +144,7 @@ class Client(object):
         """websocket error handler"""
         logging.error("websocket error: {}".format(error))
 
-    def __ws_on_close(self, w_sock):
+    def __ws_on_close(self, w_sock, _1, _2):
         """websocket connection close handler"""
         # TODO: handle connection close by reconnecting?
         logging.warning("websocket closed")
