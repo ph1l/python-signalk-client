@@ -647,7 +647,7 @@ class DNSIncoming(QuietLogger):
 
     def read_questions(self):
         """Reads questions section of packet"""
-        for i in xrange(self.num_questions):
+        for i in range(self.num_questions):
             name = self.read_name()
             type_, class_ = self.unpack(b'!HH')
 
@@ -678,7 +678,7 @@ class DNSIncoming(QuietLogger):
         """Reads the answers, authorities and additionals section of the
         packet"""
         n = self.num_answers + self.num_authorities + self.num_additionals
-        for i in xrange(n):
+        for i in range(n):
             domain = self.read_name()
             type_, class_, ttl, length = self.unpack(b'!HHiH')
 
@@ -1100,7 +1100,7 @@ class Engine(threading.Thread):
     def run(self):
         while not self.zc.done:
             with self.condition:
-                rs = self.readers.keys()
+                rs = list(self.readers.keys())
                 if len(rs) == 0:
                     # No sockets to manage, but we wait for the timeout
                     # or addition of a socket
@@ -1330,7 +1330,7 @@ class ServiceBrowser(threading.Thread):
             if self.next_time <= now:
                 out = DNSOutgoing(_FLAGS_QR_QUERY)
                 out.add_question(DNSQuestion(self.type, _TYPE_PTR, _CLASS_IN))
-                for record in self.services.values():
+                for record in list(self.services.values()):
                     if not record.is_expired(now):
                         out.add_answer_at_time(record, now)
 
@@ -1839,7 +1839,7 @@ class Zeroconf(QuietLogger):
                     now = current_time_millis()
                     continue
                 out = DNSOutgoing(_FLAGS_QR_RESPONSE | _FLAGS_AA)
-                for info in self.services.values():
+                for info in list(self.services.values()):
                     out.add_answer_at_time(DNSPointer(
                         info.type, _TYPE_PTR, _CLASS_IN, 0, info.name), 0)
                     out.add_answer_at_time(DNSService(
@@ -1961,13 +1961,13 @@ class Zeroconf(QuietLogger):
         for question in msg.questions:
             if question.type == _TYPE_PTR:
                 if question.name == "_services._dns-sd._udp.local.":
-                    for stype in self.servicetypes.keys():
+                    for stype in list(self.servicetypes.keys()):
                         if out is None:
                             out = DNSOutgoing(_FLAGS_QR_RESPONSE | _FLAGS_AA)
                         out.add_answer(msg, DNSPointer(
                             "_services._dns-sd._udp.local.", _TYPE_PTR,
                             _CLASS_IN, _DNS_TTL, stype))
-                for service in self.services.values():
+                for service in list(self.services.values()):
                     if question.name == service.type:
                         if out is None:
                             out = DNSOutgoing(_FLAGS_QR_RESPONSE | _FLAGS_AA)
@@ -1981,7 +1981,7 @@ class Zeroconf(QuietLogger):
 
                     # Answer A record queries for any service addresses we know
                     if question.type in (_TYPE_A, _TYPE_ANY):
-                        for service in self.services.values():
+                        for service in list(self.services.values()):
                             if service.server == question.name.lower():
                                 out.add_answer(msg, DNSAddress(
                                     question.name, _TYPE_A,

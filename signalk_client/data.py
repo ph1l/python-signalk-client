@@ -23,6 +23,7 @@ import json
 import logging
 import pkg_resources
 from signalk_client.vessel import Vessel
+from functools import reduce
 
 class Data(object):
     """signalk data object
@@ -83,7 +84,7 @@ class Data(object):
                     map_list = copy.deepcopy(context_list)
                     map_list += value['path'].split(".")
                     if isinstance(value['value'], dict):
-                        for key in value['value'].keys():
+                        for key in list(value['value'].keys()):
                             item_in[key] = value['value'][key]
                     else:
                         item_in['value'] = value['value']
@@ -112,7 +113,7 @@ class Data(object):
     def get_prop_meta(self, path):
         """get meta-data object from a property path
         """
-        if self.meta.has_key(path):
+        if path in self.meta:
             return self.meta[path]
         else:
             return {}
@@ -121,7 +122,7 @@ class Data(object):
         """returns a list of vessels (as Vessel objects) signalk knows of
         """
         vessels = []
-        for vessel_key in self.data['vessels'].keys():
+        for vessel_key in list(self.data['vessels'].keys()):
             vessels.append(Vessel(self, 'vessels.'+vessel_key))
         return vessels
 
