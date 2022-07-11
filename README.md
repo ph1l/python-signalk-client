@@ -9,11 +9,11 @@ a client application can be found at https://github.com/ph1l/pysk
 
 On Debian Jessie:
 
-    sudo apt-get install python-setuptools python-requests python-websocket \
-      python-enum34 python-netifaces python-six libnss-mdns
+    sudo apt-get install python3-setuptools python3-requests python3-websocket \
+      python3-netifaces python3-six libnss-mdns
 
 ## Install
 
-    python ./setup.py build
-    python ./setup.py test
-    sudo python ./setup.py install
+    python3 ./setup.py build
+    python3 ./setup.py test
+    sudo python3 ./setup.py install
