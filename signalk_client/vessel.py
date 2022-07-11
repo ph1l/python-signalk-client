@@ -82,7 +82,7 @@ class Vessel(object):
         """returns a list of available properties for vessel
         """
         out_targets = []
-        for path in self.data.meta.keys():
+        for path in list(self.data.meta.keys()):
 
             if len(path) <= 10:
                 continue
@@ -141,7 +141,7 @@ class Vessel(object):
         got = self.get_prop(path)
 
         if isinstance(got, dict):
-            if got.has_key('value'):
+            if 'value' in got:
                 value = got['value']
             else:
                 if path == "navigation.position":
@@ -153,9 +153,9 @@ class Vessel(object):
             value = got
 
         meta_path = '/vessels/*/'+path.replace('.','/')
-        if self.data.meta.has_key(meta_path):
-            if self.data.meta[meta_path].has_key('units'):
+        if meta_path in self.data.meta:
+            if 'units' in self.data.meta[meta_path]:
                 units = self.data.meta[meta_path]['units']
-            if self.data.meta[meta_path].has_key('description'):
+            if 'description' in self.data.meta[meta_path]:
                 desc = self.data.meta[meta_path]['description']
         return Datum(path, value, units, desc)

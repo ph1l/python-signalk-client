@@ -161,7 +161,7 @@ class Datum(object):
             else:
                 out_string += "{}".format(value)
             if units != None:
-                if not abbreviate_units and FULL_UNITS.has_key(units):
+                if not abbreviate_units and units in FULL_UNITS:
                     out_string += " {}".format(FULL_UNITS[units])
                 else:
                     out_string += " {}".format(units)

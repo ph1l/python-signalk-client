@@ -100,14 +100,14 @@ class Client(object):
         browser = ServiceBrowser(zeroconf, service_type, listener)
         while True:
             time.sleep(2)
-            if len(listener.get_services().keys()) > 0:
+            if len(list(listener.get_services().keys())) > 0:
                 break
             logging.warning("No Services of type:{} found.. waiting..".format(
                 service_type
                 ))
         zeroconf.close()
         services = listener.get_services()
-        service_info = services[services.keys()[0]]
+        service_info = services[list(services.keys())[0]]
         return "%s:%s"%(service_info.server, service_info.port)
 
     def __config(self):
@@ -144,7 +144,7 @@ class Client(object):
         """websocket error handler"""
         logging.error("websocket error: {}".format(error))
 
-    def __ws_on_close(self, w_sock):
+    def __ws_on_close(self, w_sock, *args):
         """websocket connection close handler"""
         # TODO: handle connection close by reconnecting?
         logging.warning("websocket closed")
